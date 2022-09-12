@@ -130,3 +130,61 @@ create a new branch that will be used for development
 Create two directories and name them ```playbooks``` and ```inventory``` respectively
 
 ![configuration succesful](./images/23.png)
+
+Within the ```playbooks``` folder, create your first playbook, and name it ```common.yml```.
+Within the ```inventory``` folder, create an inventory file (.yml) for each environment (Development, Staging Testing and Production) ```dev```, ```staging```, ```uat```, and ```prod``` respectively.
+![configuration succesful](./images/24.png)
+
+## Set up an Ansible Inventory
+
+ > Ansible uses TCP port 22 by default, which means it needs to ssh into target servers from Jenkins-Ansible host – for this let's implement the concept of ssh-agent.
+
+Install and start OpenSSH for windows. Run windows terminal in ```administrator``` mode.
+
+```bash
+ # Install the OpenSSH Client
+ 
+Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+
+# Verify installation
+Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
+
+# Start the sshd service
+Start-Service sshd
+
+# OPTIONAL but recommended:
+Set-Service -Name sshd -StartupType 'Automatic'
+
+# Confirm the Firewall rule is configured. It should be created automatically by setup. Run the following to verify
+if (!(Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue | Select-Object Name, Enabled)) {
+    Write-Output "Firewall Rule 'OpenSSH-Server-In-TCP' does not exist, creating it..."
+    New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+} else {
+    Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
+}
+```
+
+
+Add ```ssh-Agent```
+
+```bash
+# By default the ssh-agent service is disabled. Configure it to start automatically.
+# Make sure you're running as an Administrator.
+Get-Service ssh-agent | Set-Service -StartupType Automatic
+
+# Start the service
+Start-Service ssh-agent
+
+# This should return a status of Running
+Get-Service ssh-agent
+```
+
+![configuration succesful](./images/26.png)
+
+Now load your private key file into ssh-agent and log into the Jenkins-Ansible instance using the defualt username ```ubuntu``` and the ```public-dns or public-ip```
+
+```bash
+ssh-add bammy-ec2.pem
+ ssh -A ubuntu@ec2-3-86-45-0.compute-1.amazonaws.com
+```
+![configuration succesful](./images/27.png)
