@@ -60,3 +60,57 @@ Install the suggested plugins and create a username and password for login authe
 In your GitHub account, create a new repository and name it *```ansible-config-mgt```*.
 
 ![Admin password](./images/9.png)
+
+Install Ansible
+
+```bash
+sudo apt update -y
+sudo apt install ansible -y
+```
+
+![Install Ansible](./images/10.png)
+Check your Ansible version by running 
+
+```bash
+ansible --version
+```
+
+![Ansible version](./images/11.png)
+
+Configure Jenkins build job to save your repository content every time you change it.
+
+Create a new Freestyle project *```ansible```* in Jenkins and point it to your *```‘ansible-config-mgt’```* repository.
+> On the dashboard, click on Create a job, enter the job name *```Ansible```*and click on *```Freestyle project```* and click Ok
+
+![Create new job](./images/12.png)
+
+Copy the url for the *```ansible-config-mgt```* repo
+![Create new job](./images/13.png)
+
+Under *```Source Code Management```*, click on *```Git```*, paste the repo url in the ```Repository URL``` field , under *```credentials```* , click *```Add```* - enter your Github login details
+
+![Create new job](./images/14.png)
+
+Click on ```Build Triggers``` and select ```GitHub hook trigger for GITScm polling``` to Configure triggering the job from GitHub webhook
+![Create new job](./images/15.png)
+
+Configure ```"Post-build Actions"``` to archive all the files – files resulted from a build are called "artifacts". Click on ```Add post-build action``` and select ```Archive the artifacts```. In the ```Files to archive?``` input ```**``` to archive mulitiple nested artifacts and click on save.
+![Create new job](./images/16.png)
+
+Configure ```ansible-config-mgt``` repo to use webhooks.
+
+In the ```ansible-config-mgt``` repo, click on ```Settings > Webhooks > Add Webhooks```. Enter the Payload URL ```( Jenkins ip/github-webhook/)```, Content type ```apllication/json``` and click ```Add webhook```
+![Create new job](./images/17.png)
+
+Test setup by making some change in README.MD file in master branch and commit changes.
+![Create new job](./images/18.png)
+
+Make sure that builds starts automatically and Jenkins saves the files (build artifacts) in following folder
+
+```bash
+ls /var/lib/jenkins/jobs/Ansible/builds/4/archive/
+```
+
+![configuration succesful](./images/19.png)
+
+Clone down your ansible-config-mgt repo to your Jenkins-Ansible instance
