@@ -114,3 +114,19 @@ ls /var/lib/jenkins/jobs/Ansible/builds/4/archive/
 ![configuration succesful](./images/19.png)
 
 Clone down your ansible-config-mgt repo to your Jenkins-Ansible instance
+
+```bash
+git clone https://github.com/oayanda/ansible-config-mgt.git
+```
+
+![configuration succesful](./images/21.png)
+
+## BEGIN ANSIBLE DEVELOPMENT
+
+create a new branch that will be used for development
+
+![configuration succesful](./images/22.png)
+
+Create two directories and name them ```playbooks``` and ```inventory``` respectively
+
+![configuration succesful](./images/23.png)
