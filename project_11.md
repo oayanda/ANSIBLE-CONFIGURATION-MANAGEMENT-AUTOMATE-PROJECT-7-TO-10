@@ -187,4 +187,24 @@ Now load your private key file into ssh-agent and log into the Jenkins-Ansible i
 ssh-add bammy-ec2.pem
  ssh -A ubuntu@ec2-3-86-45-0.compute-1.amazonaws.com
 ```
+
 ![configuration succesful](./images/27.png)
+
+Update your inventory/dev.yml file with this snippet of code
+
+```bash
+[nfs]
+<NFS-Server-Private-IP-Address> ansible_ssh_user='ec2-user'
+
+[webservers]
+<Web-Server1-Private-IP-Address> ansible_ssh_user='ec2-user'
+<Web-Server2-Private-IP-Address> ansible_ssh_user='ec2-user'
+
+[db]
+<Database-Private-IP-Address> ansible_ssh_user='ec2-user' 
+
+[lb]
+<Load-Balancer-Private-IP-Address> ansible_ssh_user='ubuntu'
+```
+
+CREATE A COMMON PLAYBOOK    
