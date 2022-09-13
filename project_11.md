@@ -207,4 +207,86 @@ Update your inventory/dev.yml file with this snippet of code
 <Load-Balancer-Private-IP-Address> ansible_ssh_user='ubuntu'
 ```
 
-CREATE A COMMON PLAYBOOK    
+![configuration succesful](./images/28.png)
+
+Create a Common Playbook
+
+It is time to start giving Ansible the instructions on what needs to be performed on all servers listed in inventory/dev
+
+> In common.yml playbook, let's write the configuration for repeatable, re-usable, and multi-machine tasks that is common to systems within the infrastructure.
+
+Update your playbooks/common.yml file with following code
+
+```bash
+---
+- name: update web, nfs and db servers
+  hosts: webservers, nfs, db
+  remote_user: ec2-user
+  become: yes
+  become_user: root
+  tasks:
+    - name: ensure wireshark is at the latest version
+      yum:
+        name: wireshark
+        state: latest
+
+- name: update LB server
+  hosts: lb
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  tasks:
+    - name: Update apt repo
+      apt: 
+        update_cache: yes
+
+    - name: ensure wireshark is at the latest version
+      apt:
+        name: wireshark
+        state: latest
+
+```
+
+![configuration succesful](./images/29.png)
+
+
+> *The playbook above is divided into two parts, each of them is intended to perform the same task: install wireshark utility (or make sure it is updated to the latest version) on your RHEL 8 and Ubuntu servers. It uses root user to perform this task and respective package manager: yum for RHEL 8 and apt for Ubuntu.*
+
+Update GIT with the latest code
+use git commands to add, commit and push your branch to GitHub.
+
+```bash
+git status
+
+git add .
+
+git commit -m "Added Ansible playbooks and inventory"
+```
+
+Create a Pull Request (PR) - switch to the ```ansible-config-mgt``` repo, a recent push notification requiring a pull request is shown. 
+![configuration succesful](./images/30.png)
+
+Click on ```compare & pull request```, if everything looks Ok, click ```create a pull request```
+
+![configuration succesful](./images/31.png)
+
+Click ```Merge pull request``` and ```confirm merge```
+
+![configuration succesful](./images/32.png)
+Confirmation Jenkins automatic build
+![configuration succesful](./images/33.png)
+from terminal
+```bash
+ls /var/lib/jenkins/jobs/Ansible/builds/7/archive/
+```
+![configuration succesful](./images/34.png)
+
+Run first Ansible test
+> clone the repo to jenkins instance  
+>```git clone <repo url>```
+```bash
+cd ansible-config-mgt
+```
+```bash
+ansible-playbook -i inventory/dev.yml playbooks/common.yml
+```
