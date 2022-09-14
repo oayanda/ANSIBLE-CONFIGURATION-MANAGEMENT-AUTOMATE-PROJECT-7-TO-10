@@ -313,3 +313,44 @@ On each server, check if wireshark has been installed by running ```which wiresh
 
 ![wireshark succesfully](./images/38.png)
 
+Lets update this playbook with following tasks:
+Create a directory and a file on web, nfs and db servers
+Change timezone on web, nfs and db servers
+> create a new branch to add the task
+
+![wireshark succesfully](./images/39.png)
+
+Update the playbook
+
+```bash
+     - name: Create a new directory named New-Dir
+      file:
+       path: ~/New-Dir
+       state: directory
+
+    - name: Create a file named new-file
+      file:
+       path: ~/New-Dir/new-file
+       state: touch
+
+    - name: Change time zone to Africa/lagos
+      timezone:
+         name: Africa/Lagos
+
+```
+
+![wireshark succesfully](./images/40.png)
+
+Save changes in the new branch and commit, push changes.
+
+![wireshark succesfully](./images/41.png)
+
+Pull request and merge changes
+![wireshark succesfully](./images/42.png)
+
+Verify automatic new build in Jenkins
+![wireshark succesfully](./images/43.png)
+
+Navigate to the new build in the terminal and run the anisble playbook
+
+![wireshark succesfully](./images/44.png)
