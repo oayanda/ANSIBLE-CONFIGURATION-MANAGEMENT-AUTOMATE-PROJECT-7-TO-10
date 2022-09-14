@@ -142,7 +142,7 @@ Within the ```inventory``` folder, create an inventory file (.yml) for each envi
 Install and start OpenSSH for windows. Run windows terminal in ```administrator``` mode.
 
 ```bash
- # Install the OpenSSH Client
+ # If this you first time - Install the OpenSSH Client on Windows OS
  
 Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
 
@@ -184,8 +184,11 @@ Get-Service ssh-agent
 Now load your private key file into ssh-agent and log into the Jenkins-Ansible instance using the defualt username ```ubuntu``` and the ```public-dns or public-ip```
 
 ```bash
+# Add ssh agent
 ssh-add bammy-ec2.pem
- ssh -A ubuntu@ec2-3-86-45-0.compute-1.amazonaws.com
+
+#login with the ssh agent
+ssh -A ubuntu@ec2-3-86-45-0.compute-1.amazonaws.com
 ```
 
 ![configuration succesful](./images/27.png)
@@ -277,16 +280,36 @@ Confirmation Jenkins automatic build
 ![configuration succesful](./images/33.png)
 from terminal
 ```bash
-ls /var/lib/jenkins/jobs/Ansible/builds/7/archive/
+ls /var/lib/jenkins/jobs/Ansible/builds/3/archive/
 ```
 ![configuration succesful](./images/34.png)
 
-Run first Ansible test
-> clone the repo to jenkins instance  
->```git clone <repo url>```
-```bash
-cd ansible-config-mgt
+Switched back to branch ```main```
+
+```bash 
+git checkout main 
+
+# Pull down the latest changes.
+git pull
 ```
+
+![configuration succesful](./images/35.png)
+
+Run first Ansible Playbook - change to the build artifacts directory
+
 ```bash
+cd /var/lib/jenkins/jobs/Ansible/builds/3/archive
+```
+
+![configuration succesful](./images/36.png)
+
+```bash
+# Run ansible playbook
 ansible-playbook -i inventory/dev.yml playbooks/common.yml
 ```
+![configuration succesful](./images/37.png)
+
+On each server, check if wireshark has been installed by running ```which wireshark``` or ```wireshark --version```
+
+![wireshark succesfully](./images/38.png)
+
